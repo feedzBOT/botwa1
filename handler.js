@@ -60,7 +60,7 @@ module.exports = {
             if (!isNumber(user.rubahlastclaim)) user.rubahlastclaim = 0
             if (!isNumber(user.anjing)) user.anjing = 0
             if (!isNumber(user.anjinglastclaim)) user.anjinglastclaim = 0
-
+            if (!('pasangan' in user)) user.pasangan = ''
             if (!'Banneduser' in user) user.Banneduser = false
             if (!'BannedReason' in user) user.BannedReason = ''
             if (!isNumber(user.warn)) user.warn = 0
@@ -146,6 +146,7 @@ module.exports = {
             limit: 10,
             lastclaim: 0,
             lastIstigfar: 0,
+            pasangan: '',
                  as: 0,
     paus: 0,
     kepiting: 0,
@@ -504,20 +505,20 @@ stiker = await sticker(false, "https://telegra.ph/file/dfee29786ff4c524443c2.png
 		}
 	}
 	
-if (!m.fromMe && m.text.match(/(terimakasih|makasih|tq|thanks|tengs|tengkyu|mks|mksih)/gi)) {
+/*if (!m.fromMe && m.text.match(/(terimakasih|makasih|tq|thanks|tengs|tengkyu|mks|mksih)/gi)) {
 	    conn.updatePresence(m.chat, Presence.recording)
 	    conn.sendFile(m.chat, 'src/masama.opus', 'tts.opus', null, m, true)
-	}
+	}*/
 	
-if (!m.fromMe && m.text.match(/(desah|mendesah|yamete)/gi)) {
+/*if (!m.fromMe && m.text.match(/(desah|mendesah|yamete)/gi)) {
 	    conn.updatePresence(m.chat, Presence.recording)
 	    conn.sendFile(m.chat, 'src/desah.opus', 'tts.opus', null, m, true)
-	}
+	}*/
 	
-if (!m.fromMe && m.text.match(/(asalamualaikum|assalamu'alaikum|assalamualaikum)/gi)) {
+/*if (!m.fromMe && m.text.match(/(asalamualaikum|assalamu'alaikum|assalamualaikum)/gi)) {
 	    conn.updatePresence(m.chat, Presence.recording)
 	    conn.sendFile(m.chat, 'src/wall.opus', 'tts.opus', null, m, true)
-	}
+	}*/
 	
 	
 	// done
@@ -731,8 +732,8 @@ if (!m.fromMe && m.text.match(/(asalamualaikum|assalamu'alaikum|assalamualaikum)
             } finally {
               text = (action === 'add' ? (chat.sWelcome || this.welcome || conn.welcome || 'Welcome, @user!').replace('@subject', this.getName(jid)).replace('@desc', groupMetadata.desc) :
                 (chat.sBye || this.bye || conn.bye || 'Bye, @user!')).replace('@user', '@' + user.split('@')[0])
-              this.sendFile(jid, pp, 'pp.jpg', text, null, false, {
-                contextInfo: {
+              this.sendFile(jid, pp, 'pp.jpg', text, null, false, { thumbnail: Buffer.alloc[0] },
+              {  contextInfo: {
                   mentionedJid: [user]
                 }
               })
@@ -753,7 +754,7 @@ if (!m.fromMe && m.text.match(/(asalamualaikum|assalamu'alaikum|assalamualaikum)
         break
     }
   },
-  async delete(m) {
+    async delete(m) {
     if (m.key.remoteJid == 'status@broadcast') return
     if (m.key.fromMe) return
     let chat = global.DATABASE._data.chats[m.key.remoteJid]
@@ -786,11 +787,15 @@ Untuk mematikan fitur ini, ketik
 }
 
 global.dfail = (type, m, conn) => {
+  let ini = {
+    rowner: 'https://telegra.ph/file/67c5d98df0990f5a47b97.jpg'
+  }[type]
+  if (ini) return conn.sendSticker(m.chat, 'https://telegra.ph/file/67c5d98df0990f5a47b97.jpg', m, { sendEphemeral: true})
   let msg = {
-    rowner: 'ga boleh bang, kalo gitu lagi saya benet',
-    owner: 'ga boleh bang, kalo gitu lagi saya benet',
+    rowner: `Fitur khusus @${owner[0]}`,
+    owner: `Fitur @${owner[0]} jangan di pake sembarangan`,
     mods: 'Hayoloh mau ngapain, kata fita ndak bole',
-    premium: 'Perintah ini hanya dapat di gunakan oleh user *premium* \n\nMau daftar premium? ketik *.goprem*',
+    premium: `Perintah ini hanya dapat di gunakan oleh user *premium*\nHubungi @${owner[0]} untuk mendaftar`,
     group: 'Harus didalam grup sayang',
     private: 'Chat pribadi aja sayang',
     admin: 'Jadi admin dulu, baru bisa pake fitur ini sayang',
@@ -809,3 +814,7 @@ fs.watchFile(file, () => {
   delete require.cache[file]
   if (global.reloadHandler) console.log(global.reloadHandler())
 })
+
+function pickRandom(list) {
+    return list[Math.floor(Math.random() * list.length)]
+}
